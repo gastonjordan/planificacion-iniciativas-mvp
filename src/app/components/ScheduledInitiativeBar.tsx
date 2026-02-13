@@ -200,6 +200,8 @@ export function ScheduledInitiativeBar({
                   e.stopPropagation();
                   const dateStr = format(workDays[0], 'yyyy-MM-dd');
                   const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
+console.log("INPUT HOURS CHANGED:", { dateStr, value, raw: e.target.value });
+
                   onHoursChange(dateStr, isNaN(value) ? 0 : value);
                 }}
                 onClick={(e) => {

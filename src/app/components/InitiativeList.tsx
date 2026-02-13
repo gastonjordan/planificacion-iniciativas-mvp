@@ -3,7 +3,8 @@ import { Button } from './ui/button';
 import { Initiative } from '../types';
 import { useDrag } from 'react-dnd';
 import * as Icons from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from "react";
+
 
 interface InitiativeListProps {
   initiatives: Initiative[];
@@ -42,6 +43,9 @@ function InitiativeItem({
   const IconComponent = initiative.icon 
     ? (Icons[initiative.icon as keyof typeof Icons] as React.ComponentType<{ className?: string }>)
     : null;
+
+
+
 
   return (
     <div
@@ -159,32 +163,52 @@ function InitiativeItem({
 }
 
 export function InitiativeList({ initiatives, onCreateInitiative, onDeleteInitiative, onEditInitiative, onCloseInitiative }: InitiativeListProps) {
-  return (
-    <div className="w-80 border-r bg-gray-50 p-4 flex flex-col h-screen">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-3">Iniciativas</h2>
-        <Button onClick={onCreateInitiative} className="w-full">
-          <Plus className="w-4 h-4 mr-2" />
-          Nueva Iniciativa
-        </Button>
-      </div>
-      <div className="flex-1 overflow-y-auto space-y-2">
-        {initiatives.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center mt-8">
-            No hay iniciativas. Crea una para comenzar.
-          </p>
-        ) : (
-          initiatives.map((initiative) => (
-            <InitiativeItem
-              key={initiative.id}
-              initiative={initiative}
-              onDelete={onDeleteInitiative}
-              onEdit={onEditInitiative}
-              onClose={onCloseInitiative}
-            />
-          ))
-        )}
-      </div>
+const [search, setSearch] = useState("");
+
+const filteredInitiatives = initiatives.filter(i =>
+  i.name.toLowerCase().includes(search.trim().toLowerCase())
+);
+  
+
+return (
+  <div className="w-[480px] border-r bg-gray-50 p-4 flex flex-col h-screen">
+    <div className="mb-4">
+      <h2 className="text-xl font-semibold mb-3">Iniciativas</h2>
+
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Buscar iniciativa…"
+        className="mb-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <Button onClick={onCreateInitiative} className="w-full">
+        <Plus className="w-4 h-4 mr-2" />
+        Nueva Iniciativa
+      </Button>
     </div>
-  );
+
+    <div className="flex-1 overflow-y-auto space-y-2">
+      {initiatives.length === 0 ? (
+        <p className="text-sm text-gray-500 text-center mt-8">
+          No hay iniciativas. Crea una para comenzar.
+        </p>
+      ) : filteredInitiatives.length === 0 ? (
+        <p className="text-sm text-gray-500 text-center mt-8">
+          No se encontraron iniciativas.
+        </p>
+      ) : (
+        filteredInitiatives.map((initiative) => (
+          <InitiativeItem
+            key={initiative.id}
+            initiative={initiative}
+            onDelete={onDeleteInitiative}
+            onEdit={onEditInitiative}
+            onClose={onCloseInitiative}
+          />
+        ))
+      )}
+    </div>
+  </div>
+);
 }

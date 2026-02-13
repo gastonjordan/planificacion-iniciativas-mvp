@@ -234,8 +234,10 @@ function WeekRow({
           />
         ))}
         
-        {/* Overlay con iniciativas programadas - posicionamiento absoluto independiente */}
-        <div className="absolute inset-0 pointer-events-none">
+    {/* Overlay con iniciativas programadas - posicionamiento absoluto independiente */}
+<div className="absolute inset-0 pointer-events-none">
+
+
           <div className="grid grid-cols-5 h-full p-2 gap-2">
             {/* Crear una columna flex para cada día */}
             {days.map((day, dayIdx) => {
@@ -298,7 +300,7 @@ function WeekRow({
                       return (
                         <div
                           key={scheduled.id}
-                          className="absolute"
+                          className="absolute pointer-events-auto"
                           style={{
                             left: `calc(${leftPercent}% + ${gridColumnStart * 0.5}rem)`,
                             width: `calc(${widthPercent}% - ${gapWidth}rem)`,
@@ -319,19 +321,23 @@ function WeekRow({
                       );
                     } else {
                       // Para iniciativas de un solo día, renderizar normalmente en el flujo flex
-                      return (
-                        <ScheduledInitiativeBar
-                          key={scheduled.id}
-                          scheduled={scheduled}
-                          initiative={initiative}
-                          weekStartDate={weekStart}
-                          onRemove={() => onRemoveScheduled(scheduled.id)}
-                          onHoursChange={(date, hours) => onUpdateHours(scheduled.id, date, hours)}
-                          onResize={(newEndDate) => onResizeScheduled(scheduled.id, newEndDate)}
-                          onDuplicate={onDuplicateScheduled ? () => onDuplicateScheduled(scheduled.id) : undefined}
-                          isAnyClosed={isAnyClosed}
-                        />
-                      );
+          
+return (
+  <div key={scheduled.id} className="pointer-events-auto">
+    <ScheduledInitiativeBar
+      scheduled={scheduled}
+      initiative={initiative}
+      weekStartDate={weekStart}
+      onRemove={() => onRemoveScheduled(scheduled.id)}
+      onHoursChange={(date, hours) => onUpdateHours(scheduled.id, date, hours)}
+      onResize={(newEndDate) => onResizeScheduled(scheduled.id, newEndDate)}
+      onDuplicate={onDuplicateScheduled ? () => onDuplicateScheduled(scheduled.id) : undefined}
+      isAnyClosed={isAnyClosed}
+    />
+  </div>
+);
+
+
                     }
                   })}
                 </div>
